@@ -6,7 +6,9 @@
 package populatelist;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -15,6 +17,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 /**
  *
@@ -48,18 +52,37 @@ public class FXMLDocumentController implements Initializable {
   @Override
   public void initialize(URL url, ResourceBundle rb) {
     // TODO
+      SyncPeopleListView();
   }  
 
     @FXML
     private void handleBtnAddPersonClicked(MouseEvent event) {
-    // Build up full name
-    String fullName = tfFirstName.getText() + " " +
-        tfLastName.getText();
-    // Debugging to be removed later
-    System.out.println(fullName);
-    // Debugging to be removed later
-    lvPeople.getItems().add(fullName);
+   Person newPerson = new Person();
+   newPerson.setFirstName(tfFirstName.getText());
+   newPerson.setLastName(tfLastName.getText());
 }
-    
+   public void SyncPeopleListView() {
+       //Items inside the list
+       ObservableList<String> items = lvPeople.getItems();
+       
+       //Clear out the list
+       items.clear();
+       
+       //Get list of all people in the database
+       EntityManagerFactory emf=
+               Persistence.createEntityManagerFactory("PopulateListPU");
+       
+      PersonJpaController jpaPerson;
+      jpaPerson = new PersonJpaController(emf);
+      
+      List<Person> people = jpaPerson.findPersonEntities();
+      
+      // Add each person to the list
+      for (Person p : people) {
+          String fullName = p.getFirstName() + " " + p.getLastName();
+          lvPeople.getItems().add(fullName);
+      }  
+   }
+   
   
 }
