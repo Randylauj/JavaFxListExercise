@@ -8,6 +8,8 @@ package populatelist;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -52,7 +54,8 @@ public class FXMLDocumentController implements Initializable {
   @Override
   public void initialize(URL url, ResourceBundle rb) {
     // TODO
-      SyncPeopleListView();
+          SyncPeopleListView();
+
   }  
 
     @FXML
@@ -60,8 +63,23 @@ public class FXMLDocumentController implements Initializable {
    Person newPerson = new Person();
    newPerson.setFirstName(tfFirstName.getText());
    newPerson.setLastName(tfLastName.getText());
-}
-   public void SyncPeopleListView() {
+   
+   EntityManagerFactory emf =
+    Persistence.createEntityManagerFactory("PopulateListPU");
+
+    PersonJpaController jpaPerson =
+    new PersonJpaController(emf);
+
+    try {
+        jpaPerson.create(newPerson);
+  } catch (Exception ex) {
+        Logger.getLogger(FXMLDocumentController.class.getName()).log(
+        Level.SEVERE, null, ex);
+  }
+    }
+
+   
+    public void SyncPeopleListView() {
        //Items inside the list
        ObservableList<String> items = lvPeople.getItems();
        
