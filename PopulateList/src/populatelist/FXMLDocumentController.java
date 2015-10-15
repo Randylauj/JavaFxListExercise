@@ -99,16 +99,36 @@ public class FXMLDocumentController implements Initializable {
       
       // Add each person to the list
       for (Person p : people) {
-          String fullName = p.getFirstName() + " " + p.getLastName();
-          lvPeople.getItems().add(fullName);
+          
+          lvPeople.getItems().add(p.getId() + " " + p.getFirstName() 
+                  + " " + p.getLastName());
       }  
    }
 
     @FXML
     private void handleBTnDeletePersonClicked(MouseEvent event) {
+        
+        
         String selectedText = lvPeople.getSelectionModel().getSelectedItem();
+        String idStr = selectedText.split(","[0]);
 System.out.println("Delete " + selectedText);
+System.out.println("id" + idStr);
 
+
+ EntityManagerFactory emf =
+    Persistence.createEntityManagerFactory("PopulateListPU");
+ 
+PersonJpaController jpaPerson =
+    new PersonJpaController(emf);
+
+try {
+    int id = Integer.parseInt(idStr);    
+    jpaPerson.destroy(id);
+  } catch (Exception ex) {
+        Logger.getLogger(FXMLDocumentController.class.getName()).log(
+        Level.SEVERE, null, ex);
+  }
+ SyncPeopleListView();
     }
    
   
