@@ -44,6 +44,8 @@ public class FXMLDocumentController implements Initializable {
     private Label lblLastName;
     @FXML
     private Button btnAddPerson;
+    @FXML
+    private Button btnDelete;
   
   @FXML
   private void handleButtonAction(ActionEvent event) {
@@ -101,6 +103,13 @@ public class FXMLDocumentController implements Initializable {
           lvPeople.getItems().add(fullName);
       }  
    }
+
+    @FXML
+    private void handleBTnDeletePersonClicked(MouseEvent event) {
+        String selectedText = lvPeople.getSelectionModel().getSelectedItem();
+System.out.println("Delete " + selectedText);
+
+    }
    
   
 }
